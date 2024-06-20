@@ -6,8 +6,18 @@ namespace Loja.models
   public class Cliente
   {
     public int Id { get; set; }
-    public String Nome { get; set; }
-    public String Cpf { get; set; }
-    public String Email { get; set; }
+
+    [Required]
+    public string Nome { get; set; }
+
+    [Required]
+    public string Cpf { get; set; }
+
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; }
+
+    // Propriedade de navegação para as vendas deste cliente
+    public ICollection<Venda> Vendas { get; set; }
   }
 }

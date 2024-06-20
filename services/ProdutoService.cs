@@ -1,59 +1,55 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Loja.data;
 using Loja.models;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Loja.services
 {
   public class ProductService
   {
-    private readonly LojaDbContext _dbContext;
-    public ProductService(LojaDbContext dbContext)
+    private readonly LojaDbContext _context;
+
+    public ProductService(LojaDbContext context)
     {
-      _dbContext = dbContext;
+      _context = context;
     }
 
-    //Metodo para consultar todos os produtos
+    // Retorna todos os produtos de forma assíncrona.
     public async Task<List<Produto>> GetAllProductsAsync()
     {
-      return await _dbContext.Produtos.ToListAsync();
+      return await _context.Produtos.ToListAsync();
     }
 
-    //Metodo para consultar um produto a partir do seu id
+    // Retorna um produto pelo seu ID de forma assíncrona.
     public async Task<Produto> GetProductByIdAsync(int id)
     {
-      return await _dbContext.Produtos.FindAsync(id);
+      return await _context.Produtos.FindAsync(id);
     }
 
-    //Metodo para gravar um novo produto
+    // Adiciona um novo produto de forma assíncrona.
     public async Task AddProductAsync(Produto produto)
     {
-      _dbContext.Produtos.Add(produto);
-      await _dbContext.SaveChangesAsync();
+      _context.Produtos.Add(produto);
+      await _context.SaveChangesAsync();
     }
 
-    //Metodo para tualizar os dados de um produto
+    // Atualiza um produto existente de forma assíncrona.
     public async Task UpdateProductAsync(Produto produto)
     {
-      _dbContext.Entry(produto).State = EntityState.Modified;
-      await _dbContext.SaveChangesAsync();
+      _context.Entry(produto).State = EntityState.Modified;
+      await _context.SaveChangesAsync();
     }
 
-    //Metodo para excluir um produto
+    // Remove um produto pelo seu ID de forma assíncrona.
     public async Task DeleteProductAsync(int id)
     {
-      var produto = await _dbContext.Produtos.FindAsync(id);
+      var produto = await _context.Produtos.FindAsync(id);
       if (produto != null)
       {
-        _dbContext.Produtos.Remove(produto);
-        await _dbContext.SaveChangesAsync();
+        _context.Produtos.Remove(produto);
+        await _context.SaveChangesAsync();
       }
-    }
-
-    internal static async Task GetAllForncedorAsync()
-    {
-      throw new NotImplementedException();
     }
   }
 }

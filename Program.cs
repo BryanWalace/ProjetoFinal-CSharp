@@ -16,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Adicionar serviços ao contêiner.
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<FornecedorService>();
+builder.Services.AddScoped<ClientesService>();
 
 // Adicionar serviços ao contêiner.
 // Saiba mais sobre como configurar o Swagger/OpenAPI em https://aka.ms/aspnetcore/swashbuckle
@@ -86,6 +87,46 @@ app.MapPut("/produtos/{id}", async (int id, Produto produto, ProductService prod
 app.MapDelete("/produtos/{id}", async (int id, ProductService productService) =>
 {
   await productService.DeleteProductAsync(id);
+  return Results.Ok();
+});
+
+app.MapGet("/cliente", async (ClientesService clientesService) =>
+{
+  var clientes = await clientesService.GetAllClientesAsync();
+  return Results.Ok(clientes);
+});
+
+app.MapGet("/clientes/{id}", async (int id, ClientesService clientesService) =>
+{
+  var cliente = await clientesService.GetClientesByIdAsync(id);
+  if (cliente == null)
+  {
+    return Results.NotFound($"Cliente with ID {id} not found.");
+  }
+
+  return Results.Ok(cliente);
+});
+
+app.MapPost("/clientes", async (Cliente cliente, ClientesService clientesService) =>
+{
+  await clientesService.AddClientesAsync(cliente);
+  return Results.Created($"/clientes/{cliente.Id}", cliente);
+});
+
+app.MapPut("/clientes/{id}", async (int id, Cliente cliente, ClientesService clientesService) =>
+{
+  if (id != cliente.Id)
+  {
+    return Results.BadRequest("Cliente ID mismatch.");
+  }
+
+  await clientesService.UpdateClientesAsync(cliente);
+  return Results.Ok();
+});
+
+app.MapDelete("/clientes/{id}", async (int id, ClientesService clientesService) =>
+{
+  await clientesService.DeleteClientesAsync(id);
   return Results.Ok();
 });
 

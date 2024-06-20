@@ -1,0 +1,147 @@
+// Configuração dos endpoints
+
+/*
+app.MapPost("/createproduto", async (LojaDbContext DbContext, Produto newProduto) =>
+{
+  DbContext.Produtos.Add(newProduto);
+  await DbContext.SaveChangesAsync();
+  return Results.Created($"/createproduto/{newProduto.Id}", newProduto);
+});
+
+
+app.MapGet("/produtos", async (LojaDbContext dbContext) =>
+{
+  var produtos = await dbContext.Produtos.ToListAsync();
+  return Results.Ok(produtos);
+});
+
+
+app.MapGet("/produtos/{id}", async (int id, LojaDbContext dbContext) =>
+{
+  var produto = await dbContext.Produtos.FindAsync(id);
+  if (produto == null)
+  {
+    return Results.NotFound($"Produto with ID {id} not found.");
+  }
+
+  return Results.Ok(produto);
+});
+
+
+app.MapPut("/produtos/{id}", async (int id, LojaDbContext dbContext, Produto updateProduto) =>
+{
+  // Verifica se o produto existe na base, conforme o id informado
+  // Se o produto existir na base, será retornado para dentro do objeto existingProduto
+  var existingProduto = await dbContext.Produtos.FindAsync(id);
+  if (existingProduto == null)
+  {
+    return Results.NotFound($"Produto with ID {id} not found.");
+  }
+
+  // Atualiza no banco de dados
+  existingProduto.Nome = updateProduto.Nome;
+  existingProduto.Preco = updateProduto.Preco;
+  existingProduto.Fornecedor = updateProduto.Fornecedor;
+
+  // Salva no banco de dados
+  await dbContext.SaveChangesAsync();
+
+  // Retorna para o cliente que invocou o endpoint
+  return Results.Ok(existingProduto);
+});
+
+
+app.MapPost("/createcliente", async (LojaDbContext dbContext, Cliente newCliente) =>
+{
+  dbContext.Clientes.Add(newCliente);
+  await dbContext.SaveChangesAsync();
+  return Results.Created($"/createcliente/{newCliente.Id}", newCliente);
+});
+
+app.MapGet("/clientes", async (LojaDbContext dbContext) =>
+{
+  var clientes = await dbContext.Clientes.ToListAsync();
+  return Results.Ok(clientes);
+});
+
+app.MapGet("/clientes/{id}", async (int id, LojaDbContext dbContext) =>
+{
+  var cliente = await dbContext.Clientes.FindAsync(id);
+  if (cliente == null)
+  {
+    return Results.NotFound($"Cliente with ID {id} not found.");
+  }
+
+  return Results.Ok(cliente);
+});
+
+app.MapPut("/clientes/{id}", async (int id, LojaDbContext dbContext, Cliente updateCliente) =>
+{
+  // Verifica se o cliente existe na base, conforme o id informado
+  // Se o cliente existir na base, será retornado para dentro do objeto existingProduto
+  var existingCliente = await dbContext.Clientes.FindAsync(id);
+  if (existingCliente == null)
+  {
+    return Results.NotFound($"Cliente with ID {id} not found.");
+  }
+
+  // Atualiza no banco de dados
+  existingCliente.Nome = updateCliente.Nome;
+  existingCliente.Cpf = updateCliente.Cpf;
+  existingCliente.Email = updateCliente.Email;
+
+  // Salva no banco de dados
+  await dbContext.SaveChangesAsync();
+
+  // Retorna para o cliente que invocou o endpoint
+  return Results.Ok(existingCliente);
+});
+
+app.MapPost("/createfornecedor", async (LojaDbContext DbContext, Fornecedor newFornecedor) =>
+{
+  DbContext.Fornecedores.Add(newFornecedor);
+  await DbContext.SaveChangesAsync();
+  return Results.Created($"/createproduto/{newFornecedor.Id}", newFornecedor);
+});
+
+app.MapGet("/fornecedores", async (LojaDbContext dbContext) =>
+{
+  var fornecedores = await dbContext.Fornecedores.ToListAsync();
+  return Results.Ok(fornecedores);
+});
+
+app.MapGet("/fornecedores/{id}", async (int id, LojaDbContext dbContext) =>
+{
+  var fornecedor = await dbContext.Fornecedores.FindAsync(id);
+  if (fornecedor == null)
+  {
+    return Results.NotFound($"Fornecedor with ID {id} not found.");
+  }
+
+  return Results.Ok(fornecedor);
+});
+
+app.MapPut("/forncedores/{id}", async (int id, LojaDbContext dbContext, Fornecedor updateFornecedor) =>
+{
+  // Verifica se o fornecedor existe na base, conforme o id informado
+  // Se o fornecedor existir na base, será retornado para dentro do objeto existingProduto
+  var existingFornecedor = await dbContext.Fornecedores.FindAsync(id);
+  if (existingFornecedor == null)
+  {
+    return Results.NotFound($"Fornecedor with ID {id} not found.");
+  }
+
+  // Atualiza no banco de dados
+  existingFornecedor.Cnpj = updateFornecedor.Cnpj;
+  existingFornecedor.Nome = updateFornecedor.Nome;
+  existingFornecedor.Endereco = updateFornecedor.Endereco;
+  existingFornecedor.Email = updateFornecedor.Email;
+  existingFornecedor.Telefone = updateFornecedor.Telefone;
+
+  // Salva no banco de dados
+  await dbContext.SaveChangesAsync();
+
+  // Retorna para o cliente que invocou o endpoint
+  return Results.Ok(existingFornecedor);
+});
+*/

@@ -96,7 +96,7 @@ app.MapPost("/usuarios", async (Usuario usuario, UsuariosService usuariosService
 {
   await usuariosService.AddUsuarioAsync(usuario);
   return Results.Created($"/usuarios/{usuario.Id}", usuario);
-});
+}).RequireAuthorization();
 
 app.MapGet("/usuarios", async (UsuariosService usuariosService) =>
 {

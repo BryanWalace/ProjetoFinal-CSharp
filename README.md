@@ -60,7 +60,15 @@ Este projeto é um sistema de gestão de uma loja fictícia, desenvolvido em C# 
 
 3. **Testar os Endpoints:**
    - Utilize o Postman ou ferramenta similar para testar os endpoints da API. Exemplos de endpoints disponíveis:
-     - Login: `POST /login` (Antes de testar crie um usuario `POST /usuarios` para assim conseguir obter o acesso aos endpoints protegidos), utilize o token JWT gerado pela autenticaçao do login para acessar os demais endpoints.
+     - Criar usuario: Para criar usuario utilize `POST /usuarios` logo em seguida coloque a chave Bearer `qwertyuiopasdfghjklzxcvbnmqwerty` ou a chave que você desejar, basta alterar no projeto.
+     ```bash
+     {
+       "nome": "Nome do Usuário",
+       "email": "email@example.com",
+       "senha": "senha123"
+     }
+     ```
+     - Login: `POST /login` utilize o token JWT gerado pela autenticaçao do login para acessar os demais endpoints.
      - CRUD Usuários: `POST /usuarios`, `GET /usuarios`, `PUT /usuarios/{id}`, `DELETE /usuarios/{id}`
      - CRUD Produtos, Clientes, Fornecedores, Vendas, etc.
 

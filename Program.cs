@@ -15,6 +15,7 @@ using Loja.Services;
 using Loja.data;
 using Loja.services;
 using Loja.Controllers;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 // Adição de outros serviços ao contêiner
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+  options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+  options.JsonSerializerOptions.MaxDepth = 128; // ou outro valor adequado
+});
+
+// Adição de outros serviços ao contêiner
 builder.Services.AddControllers();
 builder.Services.AddDbContext<LojaDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 0, 26))));
@@ -48,12 +56,16 @@ builder.Services.AddScoped<ClientesService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<VendaService>();
 builder.Services.AddScoped<DepositoService>();
+builder.Services.AddScoped<ServicoService>();
+builder.Services.AddScoped<ContratosService>();
 
 // Configuração do Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Adicione os serviços ao contêiner de injeção de dependências
 var app = builder.Build();
+
 
 // Middleware de roteamento e tratamento de erros
 if (app.Environment.IsDevelopment())
@@ -90,6 +102,60 @@ app.MapPost("/login", async (HttpContext context, UsuariosService usuariosServic
   var token = tokenService.GenerateToken(email); // Geração do token JWT usando TokenService
   await context.Response.WriteAsync(token);
 });
+
+// Endpoint para criar um contrato
+app.MapPost("/contratos", async (Contratos contrato, ContratosService contratosService, ClientesService clientesService, ServicoService servicoService) =>
+{
+  // Verifica se o cliente existe
+  var clienteExistente = await clientesService.GetClienteByIdAsync(contrato.ClienteId);
+  if (clienteExistente == null)
+  {
+    return Results.NotFound($"Cliente com ID {contrato.ClienteId} não encontrado.");
+  }
+
+  // Verifica se o serviço existe
+  var servicoExistente = await servicoService.GetServicoByIdAsync(contrato.ServicoId);
+  if (servicoExistente == null)
+  {
+    return Results.NotFound($"Serviço com ID {contrato.ServicoId} não encontrado.");
+  }
+
+  // Adiciona o novo contrato
+  var novoContrato = await contratosService.AddContratoAsync(contrato);
+  return Results.Created($"/contratos/{novoContrato.Id}", novoContrato);
+}).RequireAuthorization();
+
+// Endpoint para consultar serviços contratados por um cliente específico
+app.MapGet("/clientes/{clienteId}/servicos", async (int clienteId, ContratosService contratosService, ClientesService clientesService) =>
+{
+  var cliente = await clientesService.GetClienteByIdAsync(clienteId);
+  if (cliente == null)
+  {
+    return Results.NotFound($"Cliente com ID {clienteId} não encontrado.");
+  }
+
+  var servicos = await contratosService.GetServicosByClienteIdAsync(clienteId);
+  return Results.Ok(servicos);
+}).RequireAuthorization();
+
+//Endpoints para CRUD de servico
+app.MapPost("/servico", async (Servico servico, ServicoService servicoService) =>
+{
+  await servicoService.AddServicoAsync(servico);
+  return Results.Created($"/produtos/{servico.Id}", servico);
+}).RequireAuthorization();
+
+app.MapGet("/servicos", async (ServicoService servicoService) =>
+{
+  var servicos = await servicoService.GetAllServicosAsync();
+  return Results.Ok(servicos);
+}).RequireAuthorization();
+
+app.MapGet("/servico/{id}", async (int id, ServicoService servicoService) =>
+{
+  var servico = await servicoService.GetServicoByIdAsync(id);
+  return servico != null ? Results.Ok(servico) : Results.NotFound($"Servico com ID {id} não encontrado.");
+}).RequireAuthorization();
 
 // Endpoints para CRUD de usuários
 app.MapPost("/usuarios", async (Usuario usuario, UsuariosService usuariosService) =>
@@ -172,13 +238,13 @@ app.MapGet("/clientes", async (ClientesService clientesService) =>
 
 app.MapGet("/clientes/{id}", async (int id, ClientesService clientesService) =>
 {
-  var cliente = await clientesService.GetClientesByIdAsync(id);
+  var cliente = await clientesService.GetClienteByIdAsync(id);
   return cliente != null ? Results.Ok(cliente) : Results.NotFound($"Cliente com ID {id} não encontrado.");
 }).RequireAuthorization();
 
 app.MapPost("/clientes", async (Cliente cliente, ClientesService clientesService) =>
 {
-  await clientesService.AddClientesAsync(cliente);
+  await clientesService.AddClienteAsync(cliente);
   return Results.Created($"/clientes/{cliente.Id}", cliente);
 }).RequireAuthorization();
 
@@ -189,13 +255,13 @@ app.MapPut("/clientes/{id}", async (int id, Cliente cliente, ClientesService cli
     return Results.BadRequest("ID do cliente não corresponde.");
   }
 
-  await clientesService.UpdateClientesAsync(cliente);
+  await clientesService.UpdateClienteAsync(cliente);
   return Results.Ok();
 }).RequireAuthorization();
 
 app.MapDelete("/clientes/{id}", async (int id, ClientesService clientesService) =>
 {
-  await clientesService.DeleteClientesAsync(id);
+  await clientesService.DeleteClienteAsync(id);
   return Results.Ok();
 }).RequireAuthorization();
 

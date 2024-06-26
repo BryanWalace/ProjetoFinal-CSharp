@@ -4,6 +4,7 @@ using Loja.data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Loja.Migrations
 {
     [DbContext(typeof(LojaDbContext))]
-    partial class LojaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240624224642_AddContrato")]
+    partial class AddContrato
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,7 +36,7 @@ namespace Loja.Migrations
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DataContratacao")
+                    b.Property<DateTime>("DataContatacao")
                         .HasColumnType("datetime(6)");
 
                     b.Property<decimal>("PrecoCobrado")
@@ -74,9 +77,6 @@ namespace Loja.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("ProdutoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<int?>("ProdutoId1")
@@ -298,13 +298,13 @@ namespace Loja.Migrations
             modelBuilder.Entity("Contratos", b =>
                 {
                     b.HasOne("Loja.models.Cliente", "Cliente")
-                        .WithMany("Contratos")
+                        .WithMany()
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Loja.models.Servico", "Servico")
-                        .WithMany("Contratos")
+                        .WithMany()
                         .HasForeignKey("ServicoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -382,19 +382,12 @@ namespace Loja.Migrations
 
             modelBuilder.Entity("Loja.models.Cliente", b =>
                 {
-                    b.Navigation("Contratos");
-
                     b.Navigation("Vendas");
                 });
 
             modelBuilder.Entity("Loja.models.Produto", b =>
                 {
                     b.Navigation("Depositos");
-                });
-
-            modelBuilder.Entity("Loja.models.Servico", b =>
-                {
-                    b.Navigation("Contratos");
                 });
 
             modelBuilder.Entity("Loja.models.Venda", b =>

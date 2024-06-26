@@ -1,8 +1,6 @@
 using Loja.models;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Loja.data
 {
@@ -18,9 +16,22 @@ namespace Loja.data
     public DbSet<VendaItem> VendaItens { get; set; }
     public DbSet<Deposito> Depositos { get; set; }
     public DbSet<DepositoProduto> DepositoProdutos { get; set; }
+    public DbSet<Servico> Servicos { get; set; }
+    public DbSet<Contratos> Contratos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+      // Configuração da entidade Contratos
+      modelBuilder.Entity<Contratos>()
+          .HasOne(c => c.Cliente)
+          .WithMany(c => c.contratos)
+          .HasForeignKey(c => c.ClienteId);
+
+      modelBuilder.Entity<Contratos>()
+          .HasOne(c => c.Servico)
+          .WithMany(s => s.Contratos)
+          .HasForeignKey(c => c.ServicoId);
+
       // Configuração da entidade Produto
       modelBuilder.Entity<Produto>(entity =>
       {
